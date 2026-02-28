@@ -17,7 +17,10 @@ export default function PdfViewer({ pdfUrl, currentPage, onPageChange, highlight
 
   useEffect(() => {
     if (!pdfUrl) return;
-    pdfjsLib.getDocument(pdfUrl).promise.then((doc) => {
+    pdfjsLib.getDocument({
+      url: pdfUrl,
+      standardFontDataUrl: "https://unpkg.com/pdfjs-dist@5.4.624/standard_fonts/",
+    }).promise.then((doc) => {
       setPdfDoc(doc);
       setTotalPages(doc.numPages);
     });
