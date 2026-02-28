@@ -11,6 +11,12 @@ const PdfViewer = dynamic(() => import("@/app/components/PdfViewer"), {
 export default function ChatView({ guide, pdfUrl }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [messages, setMessages] = useState([]);
+  const [highlightPulse, setHighlightPulse] = useState(0);
+
+  function handleCitationClick(pageNumber) {
+    setCurrentPage(pageNumber);
+    setHighlightPulse((prev) => prev + 1);
+  }
 
   if (!guide.knowledge_base) {
     return (
@@ -30,6 +36,7 @@ export default function ChatView({ guide, pdfUrl }) {
           pdfUrl={pdfUrl}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
+          highlightPulse={highlightPulse}
         />
       </div>
       <div className="chat-pane">
@@ -38,7 +45,7 @@ export default function ChatView({ guide, pdfUrl }) {
           title={guide.title}
           messages={messages}
           setMessages={setMessages}
-          onCitationClick={(pageNumber) => setCurrentPage(pageNumber)}
+          onCitationClick={handleCitationClick}
         />
       </div>
     </div>

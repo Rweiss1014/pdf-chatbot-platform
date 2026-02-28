@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="landing">
       <div className="landing-content">
-        <h1>PDF Chatbot Platform</h1>
+        <h1>SmartDoc</h1>
         <p className="landing-subtitle">
           Upload any PDF and instantly create an AI-powered chatbot.
           Share it with anyone via a simple link.

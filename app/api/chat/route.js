@@ -79,7 +79,17 @@ export async function POST(request) {
       temperature: 0.3,
     });
 
-    const answer = response.choices[0].message.content;
+    const rawAnswer = response.choices[0].message.content;
+    const validPages = new Set(guide.knowledge_base.map((p) => p.page));
+
+    // Strip citations to pages that don't exist
+    const answer = rawAnswer.replace(
+      /\[Page\s+(\d+)(?:,\s*([^\]]+))?\]/g,
+      (match, pageStr) => {
+        return validPages.has(parseInt(pageStr)) ? match : "";
+      }
+    );
+
     const citations = parseCitations(answer);
 
     return NextResponse.json({ answer, citations });

@@ -34,32 +34,41 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Log In</h1>
-        <p className="auth-subtitle">Welcome back to PDF Chatbot Platform</p>
+        <div className="auth-logo">SmartDoc</div>
+        <h1>Sign in</h1>
         <form onSubmit={handleSubmit}>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your password"
-            required
-          />
+          <div className="auth-field">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+          <div className="auth-field">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
           {error && <p className="auth-error">{error}</p>}
-          <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? "Logging in..." : "Log In"}
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? (
+              <span className="auth-spinner" />
+            ) : (
+              "Continue"
+            )}
           </button>
         </form>
+        <div className="auth-divider" />
         <p className="auth-switch">
-          Don&apos;t have an account? <Link href="/signup">Sign Up</Link>
+          New to SmartDoc? <Link href="/signup">Create an account</Link>
         </p>
       </div>
     </div>

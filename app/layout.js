@@ -7,7 +7,7 @@ const geistSans = Geist({
 });
 
 export const metadata = {
-  title: "PDF Chatbot Platform",
+  title: "SmartDoc",
   description: "Upload any PDF and get an AI-powered chatbot — powered by your own OpenAI key",
 };
 

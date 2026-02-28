@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 
 export default function SettingsPage() {
@@ -7,6 +8,8 @@ export default function SettingsPage() {
   const [hasKey, setHasKey] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     checkApiKey();
@@ -42,9 +45,11 @@ export default function SettingsPage() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage("API key saved successfully!");
+        setSuccess(true);
+        setMessage("API key saved! Redirecting to dashboard...");
         setHasKey(true);
         setApiKey("");
+        setTimeout(() => router.push("/dashboard"), 2000);
       } else {
         setMessage(`Error: ${data.error}`);
       }
@@ -107,7 +112,12 @@ export default function SettingsPage() {
           </button>
         </form>
 
-        {message && <p className="settings-message">{message}</p>}
+        {message && (
+          <div className={`settings-toast ${success ? "settings-toast-success" : "settings-toast-error"}`}>
+            {success && <span className="toast-check">&#10003;</span>}
+            {message}
+          </div>
+        )}
 
         <div className="settings-help">
           <h3>How to get an OpenAI API key</h3>

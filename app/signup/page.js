@@ -34,33 +34,42 @@ export default function Signup() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Sign Up</h1>
-        <p className="auth-subtitle">Create your PDF Chatbot Platform account</p>
+        <div className="auth-logo">SmartDoc</div>
+        <h1>Create your account</h1>
         <form onSubmit={handleSubmit}>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
-            minLength={6}
-            required
-          />
+          <div className="auth-field">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+          <div className="auth-field">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              minLength={6}
+              required
+            />
+          </div>
           {error && <p className="auth-error">{error}</p>}
-          <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? "Creating account..." : "Sign Up"}
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? (
+              <span className="auth-spinner" />
+            ) : (
+              "Continue"
+            )}
           </button>
         </form>
+        <div className="auth-divider" />
         <p className="auth-switch">
-          Already have an account? <Link href="/login">Log In</Link>
+          Already have an account? <Link href="/login">Sign in</Link>
         </p>
       </div>
     </div>

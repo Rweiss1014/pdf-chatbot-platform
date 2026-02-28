@@ -15,7 +15,7 @@ export default function DashboardNav({ email }) {
 
   return (
     <nav className="dashboard-nav">
-      <Link href="/dashboard" className="nav-brand">PDF Chatbot Platform</Link>
+      <Link href="/dashboard" className="nav-brand">SmartDoc</Link>
       <div className="nav-links">
         <Link href="/dashboard">My Guides</Link>
         <Link href="/dashboard/settings">Settings</Link>

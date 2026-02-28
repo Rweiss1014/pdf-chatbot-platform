@@ -7,11 +7,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export default function PdfViewer({ pdfUrl, currentPage, onPageChange }) {
+export default function PdfViewer({ pdfUrl, currentPage, onPageChange, highlightPulse }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [pdfDoc, setPdfDoc] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
+  const [showPulse, setShowPulse] = useState(false);
   const renderingRef = useRef(false);
 
   useEffect(() => {
@@ -21,6 +22,15 @@ export default function PdfViewer({ pdfUrl, currentPage, onPageChange }) {
       setTotalPages(doc.numPages);
     });
   }, [pdfUrl]);
+
+  // Trigger pulse animation when highlightPulse changes
+  useEffect(() => {
+    if (highlightPulse) {
+      setShowPulse(true);
+      const timer = setTimeout(() => setShowPulse(false), 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [highlightPulse]);
 
   const renderPage = useCallback(
     async (pageNum) => {
@@ -78,7 +88,9 @@ export default function PdfViewer({ pdfUrl, currentPage, onPageChange }) {
         </button>
       </div>
       <div className="pdf-canvas-wrapper">
-        <canvas ref={canvasRef} />
+        <div className={`pdf-canvas-container ${showPulse ? "pdf-pulse" : ""}`}>
+          <canvas ref={canvasRef} />
+        </div>
       </div>
     </div>
   );

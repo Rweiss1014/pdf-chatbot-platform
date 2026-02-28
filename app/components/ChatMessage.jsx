@@ -7,7 +7,7 @@ export default function ChatMessage({ message, onCitationClick }) {
       const match = part.match(/\[Page\s+(\d+)(?:,\s*([^\]]+))?\]/);
       if (match) {
         const pageNum = parseInt(match[1]);
-        const section = match[2] || "";
+        const section = match[2]?.trim() || "";
         return (
           <button
             key={i}
@@ -16,7 +16,6 @@ export default function ChatMessage({ message, onCitationClick }) {
             title={`Go to page ${pageNum}${section ? " - " + section : ""}`}
           >
             Page {pageNum}
-            {section ? `, ${section}` : ""}
           </button>
         );
       }
