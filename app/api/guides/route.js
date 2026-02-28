@@ -91,8 +91,8 @@ export async function POST(request) {
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    // Extract content in background (don't await in the response)
-    extractContentAsync(guide.id, fileBuffer, profile.openai_api_key_encrypted, service);
+    // Must await — Vercel kills the function after response is sent
+    await extractContentAsync(guide.id, fileBuffer, profile.openai_api_key_encrypted, service);
 
     return NextResponse.json(guide);
   } catch (err) {
