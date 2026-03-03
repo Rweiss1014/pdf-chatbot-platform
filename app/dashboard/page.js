@@ -20,6 +20,7 @@ export default async function DashboardPage() {
     .single();
 
   const hasApiKey = !!profile?.openai_api_key_encrypted;
+  const hasGuides = guides && guides.length > 0;
 
   return (
     <div className="dashboard-content">
@@ -43,16 +44,54 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {guides && guides.length > 0 ? (
+      {/* Welcome card — shows for all users */}
+      <div className="welcome-card">
+        <h2>How it works</h2>
+        <div className="welcome-steps">
+          <div className="welcome-step">
+            <div className="welcome-step-number">1</div>
+            <div>
+              <strong>Upload a PDF</strong>
+              <p>Any training doc, handbook, or guide. AI reads every page.</p>
+            </div>
+          </div>
+          <div className="welcome-step">
+            <div className="welcome-step-number">2</div>
+            <div>
+              <strong>Customize</strong>
+              <p>Set your brand colors, enable quizzes, and tweak the welcome message.</p>
+            </div>
+          </div>
+          <div className="welcome-step">
+            <div className="welcome-step-number">3</div>
+            <div>
+              <strong>Share</strong>
+              <p>Send the link or embed on any site. Track learner engagement in Analytics.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {hasGuides ? (
         <div className="guides-grid">
           {guides.map((guide) => (
             <GuideCard key={guide.id} guide={guide} />
           ))}
         </div>
       ) : (
-        <div className="empty-state">
-          <h2>No guides yet</h2>
-          <p>Upload a PDF to create your first AI chatbot guide.</p>
+        <div className="empty-state-card">
+          <div className="empty-state-icon">+</div>
+          <h2>Create your first chatbot</h2>
+          <p>Upload a PDF and SmartDoc turns it into an interactive AI assistant your learners can chat with and quiz themselves on.</p>
+          {hasApiKey ? (
+            <Link href="/dashboard/upload" className="btn btn-primary">
+              Upload Your First PDF
+            </Link>
+          ) : (
+            <Link href="/dashboard/settings" className="btn btn-primary">
+              Set Up API Key to Get Started
+            </Link>
+          )}
         </div>
       )}
     </div>

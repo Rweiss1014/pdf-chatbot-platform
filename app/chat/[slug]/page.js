@@ -17,13 +17,15 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function ChatPage({ params }) {
+export default async function ChatPage({ params, searchParams }) {
   const { slug } = await params;
+  const sp = await searchParams;
+  const embed = sp?.embed === "true";
   const service = createServiceClient();
 
   const { data: guide } = await service
     .from("guides")
-    .select("title, slug, pdf_storage_path, knowledge_base, starter_questions")
+    .select("title, slug, pdf_storage_path, knowledge_base, starter_questions, branding")
     .eq("slug", slug)
     .eq("is_public", true)
     .single();
@@ -39,6 +41,7 @@ export default async function ChatPage({ params }) {
     <ChatView
       guide={guide}
       pdfUrl={urlData?.signedUrl || ""}
+      embed={embed}
     />
   );
 }

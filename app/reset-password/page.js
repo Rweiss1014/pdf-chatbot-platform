@@ -1,29 +1,33 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
+export default function ResetPassword() {
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
+    const { error: updateError } = await supabase.auth.updateUser({
       password,
     });
 
-    if (authError) {
-      setError(authError.message);
+    if (updateError) {
+      setError(updateError.message);
       setLoading(false);
     } else {
       router.push("/dashboard");
@@ -35,44 +39,35 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">SmartDoc</div>
-        <h1>Sign in</h1>
+        <h1>Set new password</h1>
         <form onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              required
-            />
-          </div>
-          <div className="auth-field">
-            <label>Password</label>
+            <label>New Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="At least 6 characters"
+              minLength={6}
+              required
+            />
+          </div>
+          <div className="auth-field">
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Re-enter your password"
+              minLength={6}
               required
             />
           </div>
           {error && <p className="auth-error">{error}</p>}
           <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? (
-              <span className="auth-spinner" />
-            ) : (
-              "Continue"
-            )}
+            {loading ? <span className="auth-spinner" /> : "Update Password"}
           </button>
         </form>
-        <p className="auth-forgot">
-          <Link href="/forgot-password">Forgot password?</Link>
-        </p>
-        <div className="auth-divider" />
-        <p className="auth-switch">
-          New to SmartDoc? <Link href="/signup">Create an account</Link>
-        </p>
       </div>
     </div>
   );

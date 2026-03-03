@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { createServiceClient } from "@/lib/supabase-server";
 import { decrypt } from "@/lib/encryption";
 import { buildSystemPrompt } from "@/lib/build-prompt";
+import { buildQuizPrompt } from "@/lib/build-quiz-prompt";
 
 function parseCitations(text) {
   const pattern = /\[Page\s+(\d+)(?:,\s*([^\]]+))?\]/g;
@@ -23,7 +24,7 @@ function parseCitations(text) {
 
 export async function POST(request) {
   try {
-    const { message, history, slug } = await request.json();
+    const { message, history, slug, mode = "chat" } = await request.json();
 
     if (!slug) {
       return NextResponse.json({ error: "Missing guide slug" }, { status: 400 });
@@ -64,7 +65,9 @@ export async function POST(request) {
     const apiKey = decrypt(guide.profiles.openai_api_key_encrypted);
     const client = new OpenAI({ apiKey });
 
-    const systemPrompt = buildSystemPrompt(guide.knowledge_base, guide.title);
+    const systemPrompt = mode === "quiz"
+      ? buildQuizPrompt(guide.knowledge_base, guide.title)
+      : buildSystemPrompt(guide.knowledge_base, guide.title);
 
     const messages = [{ role: "system", content: systemPrompt }];
     for (const h of history || []) {
@@ -91,6 +94,19 @@ export async function POST(request) {
     );
 
     const citations = parseCitations(answer);
+
+    // Fire-and-forget: log to chat_logs
+    service
+      .from("chat_logs")
+      .insert({
+        guide_id: guide.id,
+        user_message: message,
+        assistant_message: answer,
+        citations,
+        mode,
+      })
+      .then(() => {})
+      .catch(() => {});
 
     return NextResponse.json({ answer, citations });
   } catch (error) {
